@@ -33,10 +33,18 @@
             <p>Digits: {{ analysis.digit_count }}</p>
             <p>Special Characters: {{ analysis.special_count }}</p>
         </div>
+        <form method="post">
+            <input type="hidden" name="password_to_pronounce" value="{{ request.form['password_to_analyze'] }}">
+            <button type="submit" name="pronounce_password">Pronounce</button>
+        </form>
         {% endif %}
         
         {% if generated_password %}
         <h3>Generated Password: {{ generated_password }}</h3>
+        <form method="post">
+            <input type="hidden" name="password_to_pronounce" value="{{ generated_password }}">
+            <button type="submit" name="pronounce_password">Pronounce</button>
+        </form>
         {% endif %}
         
         {% if suggestion_analysis %}
@@ -50,6 +58,10 @@
             <p>Digits: {{ suggestion_analysis.digit_count }}</p>
             <p>Special Characters: {{ suggestion_analysis.special_count }}</p>
         </div>
+        <form method="post">
+            <input type="hidden" name="password_to_pronounce" value="{{ generated_password }}">
+            <button type="submit" name="pronounce_password">Pronounce</button>
+        </form>
         {% endif %}
     </div>
 </body>

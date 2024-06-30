@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import random
 import string
 import pyttsx3
+import time
 
 app = Flask(__name__)
 
@@ -30,7 +31,11 @@ def generate_password(length=16):
 def pronounce_password(password):
     engine = pyttsx3.init()
     engine.setProperty('rate', 100)  # Slow down the speech rate
-    engine.say(' '.join(password))   # Spell out the password slowly
+    engine.setProperty('volume', 5.0)  # Set volume to maximum
+    for char in password:
+        engine.say(char)
+        engine.runAndWait()
+        time.sleep(0.1)  # Increase speed between words
     engine.runAndWait()
 
 @app.route('/', methods=['GET', 'POST'])
@@ -43,16 +48,13 @@ def index():
         if 'password_to_analyze' in request.form:
             password = request.form['password_to_analyze']
             analysis = analyze_password(password)
-            pronounce_password(password)
-            if analysis['score'] < 8:
-                generated_password = generate_password()
-                suggestion_analysis = analyze_password(generated_password)
-                pronounce_password(generated_password)
         elif 'generate_password' in request.form:
             generated_password = generate_password()
-            pronounce_password(generated_password)
             suggestion_analysis = analyze_password(generated_password)
-    
+        elif 'pronounce_password' in request.form:
+            password = request.form.get('password_to_pronounce')
+            pronounce_password(password)
+
     return render_template('index.html', analysis=analysis, generated_password=generated_password, suggestion_analysis=suggestion_analysis)
 
 if __name__ == '__main__':
